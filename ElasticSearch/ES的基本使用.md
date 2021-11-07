@@ -1,5 +1,5 @@
 # ES与sql的比较
-term查询
+1.term查询
 相当于sql中的：select * from student where name = 'zhangsan'
 
 
