@@ -1,87 +1,61 @@
+Optional可以理解为一个容器，他可以装为null的对象，也可以装任意非空对象。
+
 Optional 类可以很好的解决空指针异常的问题。
 
 
 
-Optional 提供了一种用于表示可选值而非空引用的类级别解决方案。
+当没有Optional的时候，我们这样处理空指针异常
 
-当然了，我们程序员是富有责任心的，不会坐视不管，于是就有了大量的 null 值检查。尽管有时候这种检查完全没有必要，但我们已经习惯了例行公事。终于，Java 8 看不下去了，就引入了 Optional，以便我们编写的代码不再那么刻薄呆板。
-
-![img](https://pic4.zhimg.com/v2-bec6f79f2ff9be2bbc8b724de6890977_b.jpg)
-
-### **01、没有 Optional 会有什么问题**
-
-我们来模拟一个实际的应用场景。小王第一天上班，领导老马就给他安排了一个任务，要他从数据库中根据会员 ID 拉取一个会员的姓名，然后将姓名打印到控制台。虽然是新来的，但这个任务难不倒小王，于是他花了 10 分钟写下了这段代码：
-
-```text
-public class WithoutOptionalDemo {
-    class Member {
-        private String name;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
-
-    public static void main(String[] args) {
-        Member mem = getMemberByIdFromDB();
-        if (mem != null) {
-            System.out.println(mem.getName());
-        }
-    }
-
-    public static Member getMemberByIdFromDB() {
-        // 当前 ID 的会员不存在
-        return null;
-    }
+```java
+@Getter
+User {
+    String name;
 }
+
+if (user.getName() != null)
+    sout(user.getName());
 ```
 
-由于当前 ID 的会员不存在，所以 `getMemberByIdFromDB()` 方法返回了 null 来作为没有获取到该会员的结果，那就意味着在打印会员姓名的时候要先对 mem 判空，否则就会抛出 NPE 异常，不信？让小王把 `if (mem != null)` 去掉试试，控制台立马打印错误堆栈给你颜色看看。
+当有了Optional
 
-```text
-Exception in thread "main" java.lang.NullPointerException
-    at com.cmower.dzone.optional.WithoutOptionalDemo.main(WithoutOptionalDemo.java:24)
+```java
+@Getter
+User {
+    String name;
+}
+
+Optional<String> nameOpt = Optional.ofNullable(user.getName());
+nameOpt.ifPresent(name -> sout(name));
 ```
 
-### **02、Optional 是如何解决这个问题的**
 
-小王把代码提交后，就兴高采烈地去找老马要新的任务了。本着虚心学习的态度，小王请求老马看一下自己的代码，于是老王就告诉他应该尝试一下 Optional，可以避免没有必要的 null 值检查。现在，让我们来看看小王是如何通过 Optional 来解决上述问题的。
 
-```text
-public class OptionalDemo {
-    public static void main(String[] args) {
-        Optional<Member> optional = getMemberByIdFromDB();
-        optional.ifPresent(mem -> {
-            System.out.println("会员姓名是：" + mem.getName());
-        });
-    }
+```java
+// 创建Optional对象
+static <T> Optional<T>	empty()
+    Returns an empty Optional instance.
 
-    public static Optional<Member> getMemberByIdFromDB() {
-        boolean hasName = true;
-        if (hasName) {
-            return Optional.of(new Member("沉默王二"));
-        }
-        return Optional.empty();
-    }
-}
-class Member {
-    private String name;
+static <T> Optional<T>	of(T value)
+	Returns an Optional with the specified present non-null value.
 
-    public String getName() {
-        return name;
-    }
-
-    // getter / setter
-}
+static <T> Optional<T>	ofNullable(T value)
+	Returns an Optional describing the specified value, if non-null, otherwise returns an empty Optional.
+        
+// 
+Optional<T>	filter(Predicate<? super T> predicate)
+	If a value is present, and the value matches the given predicate, return an Optional describing the value, otherwise return an empty Optional.
+        
+// map和flatMap
+<U> Optional<U>	map(Function<? super T,? extends U> mapper)
+	If a value is present, apply the provided mapping function to it, and if the result is non-null, return an Optional describing the result.
+        
+<U> Optional<U>	flatMap(Function<? super T,Optional<U>> mapper)
+	If a value is present, apply the provided Optional-bearing mapping function to it, return that result, otherwise return an empty Optional.
 ```
 
-`getMemberByIdFromDB()` 方法返回了 `Optional<Member>` 作为结果，这样就表明 Member 可能存在，也可能不存在，这时候就可以在 Optional 的 `ifPresent()` 方法中使用 Lambda 表达式来直接打印结果。
 
-Optional 之所以可以解决 NPE 的问题，是因为它明确的告诉我们，不需要对它进行判空。它就好像十字路口的路标，明确地告诉你该往哪走。
+
+
 
 ### **03、创建 Optional 对象**
 
@@ -321,7 +295,7 @@ public class OptionalMapDemo {
 
 搞清楚了 `map()` 方法的基本用法后，小王决定把 `map()` 方法与 `filter()` 方法结合起来用，前者用于将密码转化为小写，后者用于判断长度以及是否是“password”。
 
-```text
+```java
 public class OptionalMapFilterDemo {
     public static void main(String[] args) {
         String password = "password";
@@ -336,3 +310,4 @@ public class OptionalMapFilterDemo {
     }
 }
 ```
+

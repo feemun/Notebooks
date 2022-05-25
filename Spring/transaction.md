@@ -12,6 +12,26 @@ Spring中，事务分为编程式事务和声明式事务。编程式事务通�
 
 
 
+Spring中对事务的实现
+
+三个类：TransactionManager、TransactionDefinition、Propagation、Isolation、TransactionStatus
+
+三个开发中常用的传播行为：Required、Requires_new、nested
+
+使用事务时需要考虑方法抛出异常时是否rollback的三种情况：
+
+​	1.开启事务的方法调用开启事务的方法
+
+​	2.开启事务的方法调用没开启事务的方法
+
+​	3.没开启事务的方法调用开启事务的方法
+
+
+
+没开启事务的方法调用开启事务的方法，在某些情况下不会rollback，原因是使用了SpringAOP，它有自调用失效问题。
+
+
+
 **事务传播行为是为了解决业务层方法之间互相调用的事务问题**。
 
 当事务方法被另一个事务方法调用时，必须指定事务应该如何传播。例如：方法可能继续在现有事务中运行，也可能开启一个新事务，并在自己的事务中运行。
