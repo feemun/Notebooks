@@ -68,7 +68,7 @@ Spring中对事务的实现
 
 ### 2 Spring事务失效
 
-####  2.1  方法必须未被public修饰
+####  2.1  方法必须未被public修饰（不重要，无法通过编译）
 
 ```java
 @Service
@@ -85,11 +85,11 @@ public class UserService {
 
 
 
-#### 2.2 方法被final或static修饰
+#### 2.2 方法被final或static修饰（不重要，无法通过编译）
 
 事务是通过动态代理生成的代理对象，如果方法被final或static修饰，无论是JDK动态代理或CGLIB均无法生成代理对象。
 
-#### 2.3 同一个类中，内部调用会导致事务失效
+#### 2.3 同一个类中，内部调用会导致事务失效  (重要)
 
 ![image-20221103225046780](C:\Users\cat\AppData\Roaming\Typora\typora-user-images\image-20221103225046780.png)
 
@@ -103,7 +103,7 @@ public class UserService {
 
 
 
-#### 2.4 事务未被Spring管理
+#### 2.4 事务未被Spring管理（不重要，无法通过编译）
 
 ![image-20221103225643196](C:\Users\cat\AppData\Roaming\Typora\typora-user-images\image-20221103225643196.png)
 
@@ -115,27 +115,27 @@ public class UserService {
 
 两个线程使用的不是同一个Connection。该方法必须只使用一个Connection才会生效。
 
-#### 2.6 表不支持事务
+#### 2.6 表不支持事务（不重要）
 
 MySQL的MyIsAm不支持事务。
 
-#### 2.7 未开启事务
+#### 2.7 未开启事务（不重要）
 
 SpringBoot用@EnableTransactional
 
 
 
-#### 2.8 传播特性设置错了
+#### 2.8 传播特性设置错了（重要）
 
-#### 2.9 自己捕获了异常
+#### 2.9 自己捕获了异常（就是为了抛异常回滚）
 
 必须要抛异常，事务才会回滚。
 
-#### 2.10 处理异常时，throw了错误的异常
+#### 2.10 处理异常时，throw了错误的异常（不重要，无法通过编译）
 
 当抛出RuntimException及其子类和Error及其子类时，Spring事务才会rollback。
 
-#### 2.11 自定义了rollback异常
+#### 2.11 自定义了rollback异常（有用）
 
 ![image-20221103230838711](C:\Users\cat\AppData\Roaming\Typora\typora-user-images\image-20221103230838711.png)
 
@@ -143,7 +143,7 @@ SpringBoot用@EnableTransactional
 
 当抛出如类似主键重复异常时，事务不会回滚。
 
-#### 2.12 嵌套事务
+#### 2.12 嵌套事务（有用）
 
 ![image-20221103231110036](C:\Users\cat\AppData\Roaming\Typora\typora-user-images\image-20221103231110036.png)
 
