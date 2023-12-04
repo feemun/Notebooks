@@ -65,7 +65,7 @@ adb install c:\\absolute\path\tiktok.apk
 
 ```bash
 # 查看所有环境变量
-env
+printenv
 
 # 
 echo $env_var_name
